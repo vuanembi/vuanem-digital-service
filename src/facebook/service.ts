@@ -23,7 +23,7 @@ const transform = (rows: Data[]): ConversionData => ({
     })),
 });
 
-const service = async (day = 1) =>
+const service = async (day: number) =>
     get<Data>({ query, params: { event_time: getDate(day) } })
         .then(transform)
         .then(upload(EVENT_SET_ID));

@@ -28,7 +28,7 @@ const transform = (rows: Data[]): ConversionData[] =>
         return Object.fromEntries(values);
     });
 
-const service = async (day = 1): Promise<[string, string]> => {
+const service = async (day: number): Promise<[string, string]> => {
     const dt = getDate(day);
 
     return get<Data>({ query, params: { dt: getDate(day) } })
