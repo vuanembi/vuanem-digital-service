@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { parse } from 'json2csv';
 
-import { Data, ConversionData } from './interface';
+import { Data, ConversionData, Field } from './interface';
 import { get } from '../db/bigquery';
 import { getDate } from '../utils';
 
@@ -10,31 +10,33 @@ const query = `
     WHERE EXTRACT(DATE FROM dt) = @dt
     `;
 
-const fields: (keyof ConversionData)[] = [
-    'Google Click ID',
-    'Conversion Time',
-    'Conversion Value',
-    'Conversion Currency',
-    'Conversion Name',
+const fields: Field[] = [
+    ['Google Click ID', ({ gclid }) => gclid],
+    [
+        'Conversion Time',
+        ({ value }) => dayjs(value).utc().format('YYYY-MM-DDTHH:mm:ssZZ'),
+    ],
+    ['Conversion Value', ({ value }) => value],
+    ['Conversion Currency', () => 'VND'],
+    ['Conversion Name', () => 'Offline Conversion'],
 ];
 
-const transform = (data: Data[]): ConversionData[] =>
-    data.map(({ dt, gclid, value }) => ({
-        'Google Click ID': gclid,
-        'Conversion Time': dayjs(dt.value)
-            .utc()
-            .format('YYYY-MM-DDTHH:mm:ssZZ'),
-        'Conversion Value': value,
-        'Conversion Currency': 'VND',
-        'Conversion Name': 'Offline Conversion',
-    }));
+const transform = (rows: Data[]): ConversionData[] =>
+    rows.map((row) => {
+        const values = fields.map(([key, valueFn]) => [key, valueFn(row)]);
+
+        return Object.fromEntries(values);
+    });
 
 const service = async (day = 1): Promise<[string, string]> => {
     const dt = getDate(day);
 
     return get<Data>({ query, params: { dt: getDate(day) } })
         .then(transform)
-        .then((data) => [`${dt}.csv`, parse(data, { fields })]);
+        .then((data) => [
+            `${dt}.csv`,
+            parse(data, { fields: fields.map(([field]) => field) }),
+        ]);
 };
 
 export default service;
