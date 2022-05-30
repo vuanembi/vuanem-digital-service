@@ -13,3 +13,8 @@ export type ConversionData = {
     'Conversion Currency': 'VND';
     'Conversion Value': number;
 };
+
+export type Field = [
+    keyof ConversionData,
+    (row: Data) => ConversionData[keyof ConversionData],
+];
