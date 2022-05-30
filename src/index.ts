@@ -9,13 +9,13 @@ export const main: HttpFunction = (req, res) => {
     console.log({ body, path });
 
     if (path === '/facebook') {
-        facebookService(body.day).then((num) => {
+        facebookService(body.day || 1).then((num) => {
             console.log(num);
             res.status(200).send({ num });
             return;
         });
     } else if (path === '/google') {
-        googleService(params?.day ? parseInt(params.day) : undefined)
+        googleService(params?.day ? parseInt(params.day) : 1)
             .then(([filename, content]) => {
                 res.attachment(filename);
                 res.status(200).send(content);
