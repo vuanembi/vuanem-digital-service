@@ -1,8 +1,5 @@
 import GoogleService, { buildQuery } from './google.service';
 
-const campaignId = 17381316647;
-const adGroupId = 140248849421;
-
 const cases = [
     {
         name: 'Success',
