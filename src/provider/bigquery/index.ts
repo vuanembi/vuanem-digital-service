@@ -6,4 +6,4 @@ const client = new BigQuery();
 export const get = <T>(query: string): Promise<T[]> =>
     client.query({ query }).then(([rows]) => rows);
 
-export const QueryBuilder = knex({ client: 'pg' });
+export const QueryBuilder = knex({ client: 'mysql' });
