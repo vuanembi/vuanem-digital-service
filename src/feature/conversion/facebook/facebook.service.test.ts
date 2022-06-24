@@ -1,4 +1,4 @@
-import facebookService from './service';
+import facebookService from './facebook.service';
 
 it('Facebook', () =>
     facebookService(1).then((res) => {

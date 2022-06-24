@@ -1,9 +1,28 @@
 import dayjs from 'dayjs';
 import { parse } from 'json2csv';
+import { BigQueryTimestamp } from '@google-cloud/bigquery';
 
-import { Data, ConversionData, Field } from './interface';
-import { get } from '../db/bigquery';
+import { get } from '../../../provider/bigquery';
 import { getDate } from '../utils';
+
+export type Data = {
+    dt: BigQueryTimestamp;
+    gclid: string;
+    value: number;
+};
+
+export type ConversionData = {
+    'Google Click ID': string;
+    'Conversion Name': string;
+    'Conversion Time': string;
+    'Conversion Currency': 'VND';
+    'Conversion Value': number;
+};
+
+export type Field = [
+    keyof ConversionData,
+    (row: Data) => ConversionData[keyof ConversionData],
+];
 
 const query = `
     SELECT * FROM OP_Marketing.MK_OfflineConversion_Google
@@ -28,7 +47,7 @@ const transform = (rows: Data[]): ConversionData[] =>
         return Object.fromEntries(values);
     });
 
-const service = async (day: number): Promise<[string, string]> => {
+const GoogleService = async (day: number): Promise<[string, string]> => {
     const dt = getDate(day);
 
     return get<Data>({ query, params: { dt: getDate(day) } })
@@ -39,4 +58,4 @@ const service = async (day: number): Promise<[string, string]> => {
         ]);
 };
 
-export default service;
+export default GoogleService;

@@ -1,7 +1,7 @@
 import { HttpFunction } from '@google-cloud/functions-framework';
 
-import facebookService from './facebook/service';
-import googleService from './google/service';
+import facebookService from './feature/conversion/facebook/facebook.service';
+import googleService from './feature/conversion/google/google.service';
 
 export const main: HttpFunction = (req, res) => {
     const { body, path, params } = req;

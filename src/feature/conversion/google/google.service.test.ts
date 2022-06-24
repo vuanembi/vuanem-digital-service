@@ -1,4 +1,4 @@
-import googleService from './service';
+import googleService from './google.service';
 
 it('Google', () =>
     googleService(1).then(([filename, content]) => {
