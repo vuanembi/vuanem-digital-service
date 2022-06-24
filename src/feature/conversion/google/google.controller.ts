@@ -3,9 +3,7 @@ import { Handler } from 'express';
 import GoogleService from './google.service';
 
 const GoogleController: Handler = (req, res) => {
-    const { params } = req;
-
-    GoogleService(params?.day ? parseInt(params.day) : 1)
+    GoogleService(req.date)
         .then(([filename, content]) => {
             res.attachment(filename);
             res.status(200).send(content);

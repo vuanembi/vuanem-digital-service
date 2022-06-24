@@ -2,16 +2,15 @@ import dayjs from 'dayjs';
 import { parse } from 'json2csv';
 import { BigQueryTimestamp } from '@google-cloud/bigquery';
 
-import { get } from '../../../provider/bigquery';
-import { getDate } from '../utils';
+import { get, QueryBuilder } from '../../../provider/bigquery';
 
-export type Data = {
+type Data = {
     dt: BigQueryTimestamp;
     gclid: string;
     value: number;
 };
 
-export type ConversionData = {
+type ConversionData = {
     'Google Click ID': string;
     'Conversion Name': string;
     'Conversion Time': string;
@@ -19,15 +18,16 @@ export type ConversionData = {
     'Conversion Value': number;
 };
 
-export type Field = [
+type Field = [
     keyof ConversionData,
     (row: Data) => ConversionData[keyof ConversionData],
 ];
 
-const query = `
-    SELECT * FROM OP_Marketing.MK_OfflineConversion_Google
-    WHERE EXTRACT(DATE FROM dt) = @dt
-    `;
+export const buildQuery = (date: string) =>
+    QueryBuilder.withSchema('OP_Marketing')
+        .from('MK_OfflineConversion_Google')
+        .select()
+        .whereRaw(`extract(date from dt) = ?`, date);
 
 const fields: Field[] = [
     ['Google Click ID', ({ gclid }) => gclid],
@@ -47,13 +47,13 @@ const transform = (rows: Data[]): ConversionData[] =>
         return Object.fromEntries(values);
     });
 
-const GoogleService = async (day: number): Promise<[string, string]> => {
-    const dt = getDate(day);
+const GoogleService = async (date: string): Promise<[string, string]> => {
+    const query = buildQuery(date);
 
-    return get<Data>({ query, params: { dt: getDate(day) } })
+    return get<Data>(query.toQuery())
         .then(transform)
         .then((data) => [
-            `${dt}.csv`,
+            `${date}.csv`,
             parse(data, { fields: fields.map(([field]) => field) }),
         ]);
 };
