@@ -1,7 +1,15 @@
-import facebookService from './facebook.service';
+import FacebookService, { buildQuery } from './facebook.service';
 
-it('Facebook', () =>
-    facebookService(1).then((res) => {
+const date = '2022-02-02';
+
+it('Build', () => {
+    const query = buildQuery(date);
+    console.log(query.toQuery());
+    expect(query).toBeTruthy();
+});
+
+it('Service', () =>
+    FacebookService(date).then((res) => {
         console.log(res);
         expect(res).toBeGreaterThan(0);
     }));

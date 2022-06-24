@@ -1,6 +1,9 @@
-import { BigQuery, Query } from '@google-cloud/bigquery';
+import knex from 'knex';
+import { BigQuery } from '@google-cloud/bigquery';
 
 const client = new BigQuery();
 
-export const get = <T>(options: Query): Promise<T[]> =>
-    client.query(options).then(([rows]) => rows);
+export const get = <T>(query: string): Promise<T[]> =>
+    client.query({ query }).then(([rows]) => rows);
+
+export const QueryBuilder = knex({ client: 'pg' });

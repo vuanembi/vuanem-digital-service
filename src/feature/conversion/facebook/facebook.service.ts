@@ -1,6 +1,5 @@
-import { get } from '../../../provider/bigquery';
+import { get, QueryBuilder } from '../../../provider/bigquery';
 import { upload, ConversionData } from './facebook.repository';
-import { getDate } from '../utils';
 
 const EVENT_SET_ID = 1677017575826990;
 
@@ -10,11 +9,6 @@ export type Data = {
     order_id: string;
     value: number;
 };
-
-const query = `
-    SELECT * FROM OP_Marketing.MK_OfflineConversion
-    WHERE DATE(TIMESTAMP_SECONDS(event_time)) = @event_time
-    `;
 
 const transform = (rows: Data[]): ConversionData => ({
     upload_tag: 'store_data',
@@ -29,9 +23,17 @@ const transform = (rows: Data[]): ConversionData => ({
     })),
 });
 
-const FacebookService = async (day: number) =>
-    get<Data>({ query, params: { event_time: getDate(day) } })
+export const buildQuery = (date: string) =>
+    QueryBuilder.withSchema('OP_Marketing')
+        .from('MK_OfflineConversion')
+        .select()
+        .whereRaw(`date(timestamp_seconds(event_time)) = ?`, date);
+
+const FacebookService = async (date: string) => {
+    const query = buildQuery(date);
+
+    return get<Data>(query.toQuery())
         .then(transform)
         .then(upload(EVENT_SET_ID));
-
+};
 export default FacebookService;
