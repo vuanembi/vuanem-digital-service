@@ -1,4 +1,4 @@
-name: Functions
+name: Cloud Functions
 
 on:
   push:
@@ -22,11 +22,11 @@ jobs:
     steps:
       - if: github.ref_name == 'dev'
         run: |
-          echo "FUNCTION_NAME=vuanem-offline-conversions-dev" >> $GITHUB_ENV
+          echo "FUNCTION_NAME=vuanem-digital-service-dev" >> $GITHUB_ENV
 
       - if: github.ref_name == 'master'
         run: |
-          echo "FUNCTION_NAME=vuanem-offline-conversions" >> $GITHUB_ENV
+          echo "FUNCTION_NAME=vuanem-digital-service" >> $GITHUB_ENV
 
       - id: set-fn-name
         run: echo "::set-output name=fn-name::${{ env.FUNCTION_NAME}}"
