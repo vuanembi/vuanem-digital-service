@@ -1,11 +1,16 @@
 import axios from 'axios';
 
-const API_VER = 'v13.0';
+import { getFacebookToken } from '../../../provider/secret-manager';
 
-const client = axios.create({
-    baseURL: `https://graph.facebook.com/${API_VER}`,
-    params: { access_token: process.env.ACCESS_TOKEN || '' },
-});
+const API_VER = 'v14.0';
+
+const getClient = () =>
+    getFacebookToken().then((access_token) =>
+        axios.create({
+            baseURL: `https://graph.facebook.com/${API_VER}`,
+            params: { access_token },
+        }),
+    );
 
 type UploadResponse = {
     num_processed_entries: number;
@@ -28,11 +33,14 @@ export type ConversionData = {
     }[];
 };
 
-export const upload = (eventSetId: number) => (data: ConversionData) =>
-    client
+export const upload = async (data: ConversionData, eventSetId: number) => {
+    const client = await getClient();
+
+    return client
         .post<UploadResponse>(`/${eventSetId}/events`, data)
         .then(({ data: { num_processed_entries } }) => num_processed_entries)
         .catch((err) => {
             err.isAxiosError && console.log(err.response?.data);
             return 0;
         });
+};
