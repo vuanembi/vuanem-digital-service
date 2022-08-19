@@ -1,8 +1,8 @@
 import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
 
-const client = new SecretManagerServiceClient();
-
 export const getFacebookToken = async () => {
+    const client = new SecretManagerServiceClient();
+
     const projectId = await client.getProjectId();
 
     const name = `projects/${projectId}/secrets/facebook-conversions/versions/latest`;
