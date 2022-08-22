@@ -5,7 +5,7 @@ import { conversion } from './facebook.service';
 
 export const facebookController = express.Router();
 
-facebookController.post('/conversion', (req: Request, res: Response) => {
+facebookController.get('/conversion', (req: Request, res: Response) => {
     conversionService(conversion, req.params.date)
         .then((num) => {
             console.log({ num });
