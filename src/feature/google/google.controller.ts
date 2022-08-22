@@ -1,32 +1,21 @@
-import { Handler, Request } from 'express';
+import { Handler } from 'express';
 
-import GoogleService, { Options } from './google.service';
+import { googleService } from './google.service';
 
-const parseRequest = (req: Request): Options => {
+export const googleController: Handler = async (req, res) => {
     const { campaignId, adGroupId } = req.query;
 
     if (!campaignId || !adGroupId) {
-        throw new Error();
+        res.status(400).json({ error: 'Bad request' });
+        return;
     }
 
-    return {
+    googleService({
         campaignId: parseInt(<string>campaignId),
         adGroupId: parseInt(<string>adGroupId),
-    };
+    })
+        .then((data) =>
+            data ? res.status(200).json({ data }) : res.status(404).end(),
+        )
+        .catch(() => res.status(500).end());
 };
-
-const GoogleController: Handler = async (req, res) => {
-    try {
-        const options = parseRequest(req);
-
-        GoogleService(options).then((data) =>
-            data
-                ? res.json({ data })
-                : res.status(404).json({ error: 'Not found' }),
-        );
-    } catch {
-        res.status(400).json({ error: 'Bad request' });
-    }
-};
-
-export default GoogleController;

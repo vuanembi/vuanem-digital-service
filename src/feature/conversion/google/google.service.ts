@@ -47,7 +47,7 @@ const transform = (rows: Data[]): ConversionData[] =>
         return Object.fromEntries(values);
     });
 
-const GoogleService = async (date: string): Promise<[string, string]> => {
+export const googleService = async (date: string): Promise<[string, string]> => {
     const query = buildQuery(date);
 
     return get<Data>(query.toQuery())
@@ -57,5 +57,3 @@ const GoogleService = async (date: string): Promise<[string, string]> => {
             parse(data, { fields: fields.map(([field]) => field) }),
         ]);
 };
-
-export default GoogleService;

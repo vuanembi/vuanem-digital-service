@@ -27,10 +27,8 @@ type Data = Options & {
     criterias: string[];
 };
 
-const GoogleService = async (options: Options) => {
+export const googleService = async (options: Options) => {
     const query = buildQuery(options);
 
     return get<Data>(query.toQuery()).then((data) => data.pop());
 };
-
-export default GoogleService;

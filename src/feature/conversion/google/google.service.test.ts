@@ -1,4 +1,4 @@
-import GoogleService, { buildQuery } from './google.service';
+import { googleService, buildQuery } from './google.service';
 
 const date = '2022-02-02';
 
@@ -9,7 +9,7 @@ it('Build', () => {
 });
 
 it('Service', () =>
-    GoogleService(date).then(([filename, content]) => {
+    googleService(date).then(([filename, content]) => {
         console.log(content);
         expect(filename).toBeTruthy();
         expect(content).toBeTruthy();

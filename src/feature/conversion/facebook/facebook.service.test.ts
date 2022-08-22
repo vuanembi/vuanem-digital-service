@@ -1,6 +1,6 @@
-import FacebookService, { buildQuery } from './facebook.service';
+import { facebookService, buildQuery } from './facebook.service';
 
-const date = '2022-02-02';
+const date = '2022-08-21';
 
 it('Build', () => {
     const query = buildQuery(date);
@@ -9,7 +9,7 @@ it('Build', () => {
 });
 
 it('Service', () =>
-    FacebookService(date).then((res) => {
+    facebookService(date).then((res) => {
         console.log(res);
         expect(res).toBeGreaterThan(0);
     }));

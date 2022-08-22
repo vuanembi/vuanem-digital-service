@@ -1,9 +1,9 @@
 import { Handler } from 'express';
 
-import GoogleService from './google.service';
+import { googleService } from './google.service';
 
-const GoogleController: Handler = (req, res) => {
-    GoogleService(req.date)
+export const googleController: Handler = (req, res) => {
+    googleService(req.date)
         .then(([filename, content]) => {
             res.attachment(filename);
             res.status(200).send(content);
@@ -13,5 +13,3 @@ const GoogleController: Handler = (req, res) => {
             res.status(500).send();
         });
 };
-
-export default GoogleController;

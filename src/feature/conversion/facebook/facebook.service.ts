@@ -38,7 +38,7 @@ export const buildQuery = (date: string) =>
         .select()
         .whereRaw(`date(timestamp_seconds(event_time)) = ?`, date);
 
-const FacebookService = async (date: string) => {
+export const facebookService = async (date: string) => {
     const query = buildQuery(date);
 
     return get<Data>(query.toQuery())
@@ -48,5 +48,3 @@ const FacebookService = async (date: string) => {
         )
         .then((numProcesseds) => sum(numProcesseds));
 };
-
-export default FacebookService;

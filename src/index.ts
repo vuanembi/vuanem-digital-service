@@ -1,12 +1,12 @@
 import { http } from '@google-cloud/functions-framework';
 import express from 'express';
 
-import ConversionController from './feature/conversion/conversion.controller';
-import GoogleController from './feature/google/google.controller';
+import { conversionController } from './feature/conversion/conversion.controller';
+import { googleController } from './feature/google/google.controller';
 
 const app = express();
 
-app.use('/conversion', ConversionController);
-app.get('/google/keyword', GoogleController);
+app.use('/conversion', conversionController);
+app.get('/google/keyword', googleController);
 
 http('main', app);

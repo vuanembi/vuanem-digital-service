@@ -1,13 +1,11 @@
 import express from 'express';
 
 import { getDate } from './conversion.service';
-import FacebookController from './facebook/facebook.controller';
-import GoogleController from './google/google.controller';
+import { facebookController } from './facebook/facebook.controller';
+import { googleController } from './google/google.controller';
 
-const ConversionController = express.Router();
+export const conversionController = express.Router();
 
-ConversionController.use(getDate);
-ConversionController.post('/facebook', FacebookController);
-ConversionController.get('/google', GoogleController);
-
-export default ConversionController;
+conversionController.use(getDate);
+conversionController.post('/facebook', facebookController);
+conversionController.get('/google', googleController);

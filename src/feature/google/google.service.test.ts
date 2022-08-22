@@ -1,4 +1,4 @@
-import GoogleService, { buildQuery } from './google.service';
+import { googleService, buildQuery } from './google.service';
 
 const cases = [
     {
@@ -27,7 +27,7 @@ describe('Build', () => {
 
 describe('Query', () => {
     it.each(cases)('$name', async ({ name, options }) => {
-        return GoogleService(options).then((data) => {
+        return googleService(options).then((data) => {
             console.log({ name, data });
 
             name === 'Success'
