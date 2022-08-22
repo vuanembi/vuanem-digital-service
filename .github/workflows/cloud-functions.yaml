@@ -56,7 +56,7 @@ jobs:
 
       - run: npm ci
 
-      - run: tsc --sourceMap false
+      - run: tsc --project tsconfig.build.json
 
       - run: |
           cp package.json dist/package.json
