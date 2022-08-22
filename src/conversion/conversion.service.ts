@@ -7,10 +7,15 @@ dayjs.extend(customParseFormat);
 
 const timeFormat = 'YYYY-MM-DD';
 
-export const getDate = (date?: string) => {
-    const _date = date
+export const conversionService = <T>(
+    service: (date: string) => T,
+    date?: string,
+) => {
+    const parsedDate = date
         ? dayjs.utc(date, timeFormat, true)
         : dayjs.utc(date).subtract(1, 'day');
 
-    return _date.format(timeFormat);
+    const _date = parsedDate.format(timeFormat);
+
+    return service(_date);
 };
