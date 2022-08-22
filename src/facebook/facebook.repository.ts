@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { getFacebookToken } from '../provider/secret-manager';
+import { getFacebookToken } from '../secret-manager.service';
 import { UploadResponse, UploadData } from './facebook.interface';
 
 const API_VER = 'v14.0';

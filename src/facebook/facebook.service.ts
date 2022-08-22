@@ -1,6 +1,6 @@
 import { chunk, sum } from 'lodash';
 
-import { get, QueryBuilder } from '../provider/bigquery';
+import { get, QueryBuilder } from '../bigquery.service';
 import { ConversionData } from './facebook.interface';
 import { upload } from './facebook.repository';
 

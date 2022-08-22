@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { parse } from 'json2csv';
 
-import { get, QueryBuilder } from '../provider/bigquery';
+import { get, QueryBuilder } from '../bigquery.service';
 import { Field, ConversionData } from './google.conversion.interface';
 import { LookupOptions, LookupData } from './google.lookup.interface';
 
