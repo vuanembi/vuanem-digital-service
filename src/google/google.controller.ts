@@ -17,7 +17,7 @@ googleController.get('/conversion', (req: Request, res: Response) => {
         });
 });
 
-googleController.get('/lookup', (req: Request, res: Response) => {
+googleController.get('/keyword', (req: Request, res: Response) => {
     const { campaignId, adGroupId } = req.query;
 
     if (!campaignId || !adGroupId) {
