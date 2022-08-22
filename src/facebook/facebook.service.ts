@@ -1,6 +1,6 @@
 import { chunk, sum } from 'lodash';
 
-import { get, QueryBuilder } from '../bigquery.service';
+import { get, qb } from '../bigquery.service';
 import { ConversionData } from './facebook.interface';
 import { upload } from './facebook.repository';
 
@@ -8,7 +8,8 @@ const EVENT_SET_ID = 1677017575826990;
 const CHUNK = 2000;
 
 export const conversion = async (date: string) => {
-    const query = QueryBuilder.withSchema('OP_Marketing')
+    const query = qb
+        .withSchema('OP_Marketing')
         .from('MK_OfflineConversion')
         .select()
         .whereRaw(`date(timestamp_seconds(event_time)) = ?`, date);

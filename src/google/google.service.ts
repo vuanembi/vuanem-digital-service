@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { parse } from 'json2csv';
 
-import { get, QueryBuilder } from '../bigquery.service';
+import { get, qb } from '../bigquery.service';
 import { Field, ConversionData } from './google.conversion.interface';
 import { LookupOptions, LookupData } from './google.lookup.interface';
 
@@ -17,7 +17,8 @@ export const conversion = async (date: string): Promise<[string, string]> => {
         ['Conversion Name', () => 'Offline Conversion'],
     ];
 
-    const query = QueryBuilder.withSchema('OP_Marketing')
+    const query = qb
+        .withSchema('OP_Marketing')
         .from('MK_OfflineConversion_Google')
         .select()
         .whereRaw(`extract(date from dt) = ?`, date);
@@ -40,12 +41,13 @@ export const conversion = async (date: string): Promise<[string, string]> => {
 };
 
 export const lookup = async ({ campaignId, adGroupId }: LookupOptions) => {
-    const query = QueryBuilder.withSchema('IP_GoogleAds')
+    const query = qb
+        .withSchema('IP_GoogleAds')
         .from('Keyword_7248313550')
         .select({
             campaignId: 'CampaignId',
             adGroupId: 'AdGroupId',
-            criterias: QueryBuilder.raw(`array_agg(Criteria)`),
+            criterias: qb.raw(`array_agg(Criteria)`),
         })
         .whereRaw('_DATA_DATE = _LATEST_DATE')
         .groupBy(['CampaignId', 'AdGroupId'])

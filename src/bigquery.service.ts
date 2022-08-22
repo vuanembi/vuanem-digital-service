@@ -7,4 +7,4 @@ export const get = async <T>(query: string): Promise<T[]> => {
     return client.query({ query }).then(([rows]) => rows);
 };
 
-export const QueryBuilder = knex({ client: 'mysql' });
+export const qb = knex({ client: 'mysql' });

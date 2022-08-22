@@ -9,7 +9,7 @@ facebookController.post('/conversion', (req: Request, res: Response) => {
     conversionService(conversion, req.params.date)
         .then((num) => {
             console.log({ num });
-            res.status(200).send({ num });
+            res.status(200).json({ num });
         })
         .catch((err) => {
             console.log(err);
