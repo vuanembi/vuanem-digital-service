@@ -1,7 +1,7 @@
 import { conversion, lookup } from './google.service';
 
 it('Conversion', async () => {
-    const date = '2022-02-02';
+    const date = '2022-08-25';
 
     return conversion(date).then(([filename, content]) => {
         console.log(content);

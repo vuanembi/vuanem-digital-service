@@ -1,16 +1,19 @@
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc'
 import { parse } from 'json2csv';
 
 import { get, qb } from '../bigquery.service';
 import { Field, ConversionData } from './google.conversion.interface';
 import { LookupOptions, LookupData } from './google.lookup.interface';
 
+dayjs.extend(utc);
+
 export const conversion = async (date: string): Promise<[string, string]> => {
     const fields: Field[] = [
         ['Google Click ID', ({ gclid }) => gclid],
         [
             'Conversion Time',
-            ({ value }) => dayjs(value).utc().format('YYYY-MM-DDTHH:mm:ssZZ'),
+            ({ dt }) => dayjs.utc(dt.value).format('YYYY-MM-DDTHH:mm:ssZZ'),
         ],
         ['Conversion Value', ({ value }) => value],
         ['Conversion Currency', () => 'VND'],
