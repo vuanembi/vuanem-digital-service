@@ -6,7 +6,7 @@ import { conversion, lookup } from './google.service';
 export const googleController = express.Router();
 
 googleController.get('/conversion', (req: Request, res: Response) => {
-    conversionService(conversion, req.params.date)
+    conversionService(conversion, req.query.date as string)
         .then(([filename, content]) => {
             res.attachment(filename);
             res.status(200).send(content);
