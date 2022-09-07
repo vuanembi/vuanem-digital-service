@@ -22,6 +22,6 @@ app.use((req, res, next) => {
 
 app.use('/facebook', facebookController);
 app.use('/google', googleController);
-app.use('/tawktoController', tawktoController);
+app.use('/tawkto', tawktoController);
 
 http('main', app);
