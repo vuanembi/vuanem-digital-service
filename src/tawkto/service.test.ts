@@ -6,6 +6,11 @@ it('Prechat Submit', async () => {
     const data = {
         phone: '0773314401',
         name: 'Test',
+        utm_source: 'bi',
+        utm_medium: 'bi',
+        utm_id: '12345',
+        utm_campaign: 'Campaign',
+        utm_content: 'Content',
     };
 
     return webhookService(data, prechatSubmit).then((res) =>
