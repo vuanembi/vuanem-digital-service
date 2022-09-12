@@ -4,7 +4,10 @@ import { get, qb } from '../bigquery.service';
 import { ConversionData } from './facebook.interface';
 import { upload } from './facebook.repository';
 
-const EVENT_SET_ID = 1677017575826990;
+const EVENT_SET_IDS: [number, string][] = [
+    [1677017575826990, 'facebook-conversions'],
+    [864437838246208, 'facebook-system-access-token'],
+];
 const CHUNK = 2000;
 
 export const conversion = async (date: string) => {
@@ -30,8 +33,11 @@ export const conversion = async (date: string) => {
         .then((chunks) =>
             chunks.map((data) => ({ upload_tag: 'store_data', data })),
         )
-        .then((chunks) =>
-            Promise.all(chunks.map((chunk) => upload(chunk, EVENT_SET_ID))),
-        )
+        .then((chunks) => {
+            const requests = EVENT_SET_IDS.flatMap((setId) =>
+                chunks.map((chunk) => upload(chunk, setId)),
+            );
+            return Promise.all(requests);
+        })
         .then((numProcesseds) => sum(numProcesseds));
 };
