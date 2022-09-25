@@ -21,5 +21,9 @@ export const upload = async (
 
     return client
         .post<UploadResponse>(`/${eventSetId}/events`, data)
-        .then(({ data: { num_processed_entries } }) => num_processed_entries);
+        .then(({ data: { num_processed_entries } }) => num_processed_entries)
+        .catch((err) => {
+            axios.isAxiosError(err) && console.log(err.response?.data);
+            throw err;
+        });
 };
