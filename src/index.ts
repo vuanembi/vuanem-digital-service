@@ -11,12 +11,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use((req, res, next) => {
-    console.log({
-        url: req.url,
-        params: req.params,
-        body: req.body,
-    });
+app.use(({ url, params, body }, res, next) => {
+    const log = { url, params, body };
+    console.log(JSON.stringify(log));
     next();
 });
 

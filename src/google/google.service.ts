@@ -1,46 +1,33 @@
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc'
+import utc from 'dayjs/plugin/utc';
 import { parse } from 'json2csv';
 
-import { get, qb } from '../bigquery.service';
-import { Field, ConversionData } from './google.conversion.interface';
+import { get, qb } from '../bigquery/bigquery.service';
+import { ConversionData } from '../conversion/conversion.interface';
+import { getSalesOrderData } from '../conversion/conversion.service';
 import { LookupOptions, LookupData } from './google.lookup.interface';
 
 dayjs.extend(utc);
 
-export const conversion = async (date: string): Promise<[string, string]> => {
-    const fields: Field[] = [
-        ['Google Click ID', ({ gclid }) => gclid],
-        [
-            'Conversion Time',
-            ({ dt }) => dayjs.utc(dt.value).format('YYYY-MM-DDTHH:mm:ssZZ'),
-        ],
-        ['Conversion Value', ({ value }) => value],
-        ['Conversion Currency', () => 'VND'],
+export const exportConversions = async (date: string): Promise<[string, string]> => {
+    const fields: [string, (row: ConversionData) => any][] = [
+        ['Email', () => null],
+        ['Phone Number', (row) => row.phone],
         ['Conversion Name', () => 'Offline Conversion'],
+        ['Conversion Time', (row) => dayjs.unix(row.event_time).format('YYYY-MM-DDTHH:mm:ssZZ')],
+        ['Conversion Value', (row) => row.value],
+        ['Conversion Currency', () => 'VND'],
     ];
 
-    const query = qb
-        .withSchema('OP_Marketing')
-        .from('MK_OfflineConversion_Google')
-        .select()
-        .whereRaw(`extract(date from dt) = ?`, date);
-
-    return get<ConversionData>(query.toQuery())
-        .then((rows) =>
-            rows.map((row) => {
-                const values = fields.map(([key, valueFn]) => [
-                    key,
-                    valueFn(row),
-                ]);
+    return getSalesOrderData(date)
+        .then((rows) => {
+            return rows.map((row) => {
+                const values = fields.map(([key, valueFn]) => [key, valueFn(row)]);
 
                 return Object.fromEntries(values);
-            }),
-        )
-        .then((data) => [
-            `${date}.csv`,
-            parse(data, { fields: fields.map(([field]) => field) }),
-        ]);
+            });
+        })
+        .then((data) => [`${date}.csv`, parse(data, { fields: fields.map(([field]) => field) })]);
 };
 
 export const lookup = async ({ campaignId, adGroupId }: LookupOptions) => {
