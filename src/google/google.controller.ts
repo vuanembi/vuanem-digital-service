@@ -1,44 +1,45 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 
-import { parseQuery } from '../conversion/conversion.service';
+import { ConversionServiceQuery } from '../conversion.request.dto';
+import { LookupQuery } from './google.request.dto';
 import { exportConversions, lookup } from './google.service';
 
-export const googleController = express.Router();
+export const GoogleController = express.Router();
 
-googleController.get('/conversion', ({ query }, res) => {
-    parseQuery(query)
+GoogleController.get('/conversion', ({ query }, res) => {
+    ConversionServiceQuery.validateAsync(query)
         .then(({ date }) =>
             exportConversions(date)
                 .then(([filename, content]) => {
                     res.attachment(filename);
                     res.status(200).send(content);
                 })
-                .catch((err) => {
-                    console.log(JSON.stringify(err));
-                    res.status(500).json({ err });
+                .catch((error) => {
+                    console.log(JSON.stringify(error));
+                    res.status(500).json({ error });
                 }),
         )
-        .catch((err) => {
-            console.log(JSON.stringify(err));
-            res.status(400).json({ err });
+        .catch((error) => {
+            console.warn(JSON.stringify(error));
+            res.status(400).json({ error });
         });
 });
 
-googleController.get('/keyword', (req: Request, res: Response) => {
-    const { campaignId, adGroupId } = req.query;
-
-    if (!campaignId || !adGroupId) {
-        res.status(400).json({ error: 'Bad request' });
-        return;
-    }
-
-    lookup({
-        campaignId: parseInt(<string>campaignId),
-        adGroupId: parseInt(<string>adGroupId),
-    })
-        .then((data) => (data ? res.status(200).json({ data }) : res.status(404).end()))
-        .catch((err) => {
-            console.log(err);
-            res.status(500).json({ err });
+GoogleController.get('/keyword', (req, res) => {
+    LookupQuery.validateAsync(req.query)
+        .then(({ campaignId, adGroupId }) => {
+            lookup({
+                campaignId: parseInt(campaignId),
+                adGroupId: parseInt(adGroupId),
+            })
+                .then((data) => (data ? res.status(200).json({ data }) : res.status(404).end()))
+                .catch((error) => {
+                    console.error(JSON.stringify({ error }));
+                    res.status(500).json({ error });
+                });
+        })
+        .catch((error) => {
+            console.warn(JSON.stringify({ error }));
+            res.status(400).json({ error });
         });
 });

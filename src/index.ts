@@ -2,8 +2,8 @@ import { http } from '@google-cloud/functions-framework';
 import express from 'express';
 import cors from 'cors';
 
-import { facebookController } from './facebook/facebook.controller';
-import { googleController } from './google/google.controller';
+import { FacebookController } from './facebook/facebook.controller';
+import { GoogleController } from './google/google.controller';
 import { tawktoController } from './tawkto/tawkto.controller';
 
 const app = express();
@@ -17,8 +17,8 @@ app.use(({ url, params, body }, res, next) => {
     next();
 });
 
-app.use('/facebook', facebookController);
-app.use('/google', googleController);
+app.use('/facebook', FacebookController);
+app.use('/google', GoogleController);
 app.use('/tawkto', tawktoController);
 
 http('main', app);

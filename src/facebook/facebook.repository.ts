@@ -3,7 +3,7 @@ import axios from 'axios';
 import { getSecret } from '../sercret-manager/secret-manager.service';
 import { UploadResponse, UploadData } from './facebook.interface';
 
-const API_VER = 'v15.0';
+const API_VER = 'v16.0';
 
 const getClient = async (secretKey: string) => {
     const accessToken = await getSecret(secretKey);
@@ -25,8 +25,10 @@ export const uploadEvents = async (data: UploadData, options: UploadEventsOption
     return client
         .post<UploadResponse>(`/${options.eventSetId}/events`, data)
         .then(({ data: { num_processed_entries } }) => num_processed_entries)
-        .catch((err) => {
-            axios.isAxiosError(err) && console.log(err.response?.data);
-            throw err;
+        .catch((error) => {
+            if (axios.isAxiosError(error)) {
+                console.error(JSON.stringify(error.response?.data));
+            }
+            return Promise.reject(error);
         });
 };

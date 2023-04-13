@@ -2,7 +2,7 @@ import fs from 'node:fs';
 
 import { exportConversions, lookup } from './google.service';
 
-it('Conversion', async () => {
+it('conversion', async () => {
     const date = '2023-02-13';
 
     return exportConversions(date).then(([filename, content]) => {
@@ -11,8 +11,8 @@ it('Conversion', async () => {
     });
 });
 
-describe('Lookup', () => {
-    it('Success', async () => {
+describe('lookup', () => {
+    it('lookup/success', async () => {
         const options = {
             campaignId: 17381316647,
             adGroupId: 140248849427,
@@ -21,7 +21,7 @@ describe('Lookup', () => {
         return lookup(options).then((res) => expect(res?.criterias.length).toBeGreaterThan(0));
     });
 
-    it('Failure', async () => {
+    it('lookup/failure', async () => {
         const options = {
             campaignId: 17381316647,
             adGroupId: 140248849421,
