@@ -1,10 +1,23 @@
 import { chunk, sum } from 'lodash';
 
-import { getSalesOrderData } from '../conversion/conversion.service';
+import { get, qb } from '../bigquery/bigquery.service';
 import { uploadEvents } from './facebook.repository';
 
+type SalesOrderData = {
+    event_time: number;
+    phone: string;
+    order_id: string;
+    value: number;
+};
+
 export const uploadConversions = async (date: string) => {
-    return getSalesOrderData(date)
+    const query = qb
+        .withSchema('OP_Marketing')
+        .from('MK_OfflineConversion')
+        .select()
+        .whereRaw(`date(timestamp_seconds(event_time)) = ?`, date);
+
+    return get<SalesOrderData>(query.toQuery())
         .then((rows) => {
             return rows.map(({ event_time, phone, order_id, value }) => {
                 return {
