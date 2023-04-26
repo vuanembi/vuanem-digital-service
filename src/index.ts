@@ -4,6 +4,7 @@ import cors from 'cors';
 
 import { FacebookController } from './facebook/facebook.controller';
 import { GoogleController } from './google/google.controller';
+import { tawktoController } from './tawkto/tawkto.controller';
 
 const app = express();
 
@@ -18,5 +19,6 @@ app.use(({ url, params, body }, _, next) => {
 
 app.use('/facebook', FacebookController);
 app.use('/google', GoogleController);
+app.use('/tawkto', tawktoController);
 
 http('main', app);
