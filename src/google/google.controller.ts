@@ -2,14 +2,14 @@ import express from 'express';
 
 import { ConversionServiceQuery } from '../conversion.request.dto';
 import { LookupQuery } from './google.request.dto';
-import { exportConversionsGclid as exportConversionsPhone, lookup } from './google.service';
+import { exportConversionsGclid, exportConversionsPhone, lookup } from './google.service';
 
 export const GoogleController = express.Router();
 
 GoogleController.get('/conversion/gclid', ({ query }, res) => {
     ConversionServiceQuery.validateAsync(query)
         .then(({ date }) =>
-            exportConversionsPhone(date)
+            exportConversionsGclid(date)
                 .then(([filename, content]) => {
                     res.attachment(filename);
                     res.status(200).send(content);

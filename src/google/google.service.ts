@@ -46,7 +46,7 @@ type SalesOrderPhoneData = {
     value: number;
 };
 
-export const exportConversions = async (date: string): Promise<[string, string]> => {
+export const exportConversionsPhone = async (date: string): Promise<[string, string]> => {
     const query = qb
         .withSchema('OP_Marketing')
         .from('MK_OfflineConversion')
@@ -56,7 +56,7 @@ export const exportConversions = async (date: string): Promise<[string, string]>
     const fields: [string, (row: SalesOrderPhoneData) => any][] = [
         ['Email', () => null],
         ['Phone Number', (row) => row.phone],
-        ['Conversion Name', () => 'Offline Conversion'],
+        ['Conversion Name', () => 'OCT 16/01/2023'],
         ['Conversion Time', (row) => dayjs.unix(row.event_time).format('YYYY-MM-DDTHH:mm:ssZZ')],
         ['Conversion Value', (row) => row.value],
         ['Conversion Currency', () => 'VND'],

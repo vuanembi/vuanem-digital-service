@@ -1,11 +1,20 @@
 import fs from 'node:fs';
 
-import { exportConversionsGclid, lookup } from './google.service';
+import { exportConversionsGclid, exportConversionsPhone, lookup } from './google.service';
 
-it('conversion', async () => {
+it('conversion-gclid', async () => {
     const date = '2023-02-13';
 
     return exportConversionsGclid(date).then(([filename, content]) => {
+        expect(filename).toBe(`${date}.csv`);
+        fs.writeFileSync(filename, content);
+    });
+});
+
+it('conversion-phone', async () => {
+    const date = '2023-07-24';
+
+    return exportConversionsPhone(date).then(([filename, content]) => {
         expect(filename).toBe(`${date}.csv`);
         fs.writeFileSync(filename, content);
     });
