@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 
-import { exportConversions, lookup } from './google.service';
+import { exportConversionsGclid, lookup } from './google.service';
 
 it('conversion', async () => {
     const date = '2023-02-13';
 
-    return exportConversions(date).then(([filename, content]) => {
+    return exportConversionsGclid(date).then(([filename, content]) => {
         expect(filename).toBe(`${date}.csv`);
         fs.writeFileSync(filename, content);
     });
