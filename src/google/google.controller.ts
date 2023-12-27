@@ -1,8 +1,7 @@
 import express from 'express';
 
 import { ConversionServiceQuery } from '../conversion.request.dto';
-import { LookupQuery } from './google.request.dto';
-import { exportConversionsGclid, exportConversionsPhone, lookup } from './google.service';
+import { exportConversionsGclid, exportConversionsPhone } from './google.service';
 
 export const GoogleController = express.Router();
 
@@ -40,25 +39,6 @@ GoogleController.get('/conversion/phone', ({ query }, res) => {
         )
         .catch((error) => {
             console.warn(JSON.stringify(error));
-            res.status(400).json({ error });
-        });
-});
-
-GoogleController.get('/keyword', (req, res) => {
-    LookupQuery.validateAsync(req.query)
-        .then(({ campaignId, adGroupId }) => {
-            lookup({
-                campaignId: parseInt(campaignId),
-                adGroupId: parseInt(adGroupId),
-            })
-                .then((data) => (data ? res.status(200).json({ data }) : res.status(404).end()))
-                .catch((error) => {
-                    console.error(JSON.stringify({ error }));
-                    res.status(500).json({ error });
-                });
-        })
-        .catch((error) => {
-            console.warn(JSON.stringify({ error }));
             res.status(400).json({ error });
         });
 });

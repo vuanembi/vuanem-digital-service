@@ -72,29 +72,3 @@ export const exportConversionsPhone = async (date: string): Promise<[string, str
         })
         .then((data) => [`${date}.csv`, parse(data, { fields: fields.map(([field]) => field) })]);
 };
-
-export type LookupOptions = {
-    campaignId: number;
-    adGroupId: number;
-};
-
-export type LookupData = LookupOptions & {
-    criterias: string[];
-};
-
-export const lookup = async ({ campaignId, adGroupId }: LookupOptions) => {
-    const query = qb
-        .withSchema('IP_GoogleAds')
-        .from('Keyword_7248313550')
-        .select({
-            campaignId: 'CampaignId',
-            adGroupId: 'AdGroupId',
-            criterias: qb.raw(`array_agg(Criteria)`),
-        })
-        .whereRaw('_DATA_DATE = _LATEST_DATE')
-        .groupBy(['CampaignId', 'AdGroupId'])
-        .where('CampaignId', campaignId)
-        .where('AdGroupId', adGroupId);
-
-    return get<LookupData>(query.toQuery()).then((data) => data.pop());
-};
